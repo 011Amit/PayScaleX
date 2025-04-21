@@ -17,7 +17,7 @@ export async function createSessionClient() {
     throw new Error("No session");
   }
   // Ensure the session cookie is valid and log its value for debugging
-  console.log("Session cookie value:", session.value);
+  // console.log("Session cookie value:", session.value);
   client.setSession(session.value);
 
   return {
