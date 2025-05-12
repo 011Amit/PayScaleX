@@ -149,8 +149,9 @@ export const createLinkToken = async (user: User) => {
   try {
     const tokenParams = {
       user: {
-        client_user_id: user.$id
-        // client_user_id: user.id
+        client_user_id: user.$id,
+       
+        // client_user_id: user["id"],
       },
       client_name: `${user.firstName} ${user.lastName}`,
       products: ['auth'] as Products[],
@@ -237,10 +238,14 @@ export const exchangePublicToken = async ({
     // If the funding source URL is not created, throw an error
     if (!fundingSourceUrl) throw Error;
     console.log("user in exchangePublicToken", user);
+    console.log(user.id);
+    console.log(user.userId);
+    console.log(user.$id);
     // Create a bank account using the user ID, item ID, account ID, access token, funding source URL, and sharable ID
     await createBankAccount({
       // userId: user.id,
       userId: user.$id,
+      // userId: user["$id"],
       bankId: itemId,
       accountId: accountData.account_id,
       accessToken,
@@ -295,7 +300,23 @@ export const getBank = async ({ documentId }: getBankProps) => {
     console.log(error)
   }
 }
+export const getBankByAccountId = async ({ accountId }: getBankByAccountIdProps) => {
+  try {
+    const { database } = await createAdminClient();
 
+    const bank = await database.listDocuments(
+      DATABASE_ID!,
+      BANK_COLLECTION_ID!,
+      [Query.equal('accountId', [accountId])]
+    )
+
+    if(bank.total !== 1) return null;
+
+    return parseStringify(bank.documents[0]);
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 
 // 'use server';

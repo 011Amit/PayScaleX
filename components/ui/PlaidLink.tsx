@@ -12,6 +12,7 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
 
   useEffect(() => {
     const getLinkToken = async () => {
+      console.log('user', user);
       const data = await createLinkToken(user);
 
       setToken(data?.linkToken);
